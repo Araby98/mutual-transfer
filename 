@@ -1,0 +1,17 @@
+[33mcommit 8575dbb1483f6e72eebe20aad95dc69e15e74264[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Araby <youremail@example.com>
+Date:   Mon Mar 30 23:41:14 2026 +0100
+
+    Initial commit: Mutual Transfer Platform
+
+[33mcommit eaa5adeac7802221633c61258d31c1405b9c2435[m
+Author: Araby <youremail@example.com>
+Date:   Mon Mar 30 23:25:04 2026 +0100
+
+    Completed Mutual Transfer app: Added Dark Mode, Arabic UI, and Full Workflows
+
+[33mcommit f2baaebfb550eb998dc17219e60a943703616a7e[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Araby <youremail@example.com>
+Date:   Mon Mar 30 17:54:22 2026 +0100
+
+    feat: initialize backend server with Express, Sequelize models, and SQLite database configuration
