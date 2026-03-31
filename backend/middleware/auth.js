@@ -5,7 +5,10 @@ module.exports = (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'Access Denied: No token provided' });
 
   try {
-    const verified = jwt.verify(token.replace('Bearer ', ''), 'MY_SECRET_KEY');
+    const verified = jwt.verify(
+      token.replace('Bearer ', ''),
+      process.env.JWT_SECRET || 'MY_SECRET_KEY'
+    );
     req.user = verified;
     next();
   } catch (err) {

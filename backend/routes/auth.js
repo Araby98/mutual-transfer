@@ -72,7 +72,11 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ message: 'email_not_verified' });
     }
 
-    const token = jwt.sign({ id: user.id, isAdmin: user.isAdmin }, 'MY_SECRET_KEY', { expiresIn: '1d' });
+    const token = jwt.sign(
+      { id: user.id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET || 'MY_SECRET_KEY',
+      { expiresIn: '1d' }
+    );
     res.json({
       token,
       user: {
