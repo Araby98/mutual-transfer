@@ -51,7 +51,21 @@ router.post('/verify-email', async (req, res) => {
     user.verificationToken = null;
     await user.save();
 
-    res.json({ message: 'email_verified' });
+    const token = jwt.sign(
+      { id: user.id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET || 'MY_SECRET_KEY',
+      { expiresIn: '1d' }
+    );
+
+    res.json({
+      message: 'email_verified',
+      token,
+      user: {
+        id: user.id, firstName: user.firstName, lastName: user.lastName,
+        email: user.email, phone: user.phone, grade: user.grade,
+        frmProvince: user.frmProvince, isAdmin: user.isAdmin
+      }
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

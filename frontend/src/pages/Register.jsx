@@ -40,7 +40,7 @@ export default function Register() {
 
     try {
       await axios.post('http://localhost:5000/api/auth/register', formData);
-      navigate('/check-email');
+      navigate('/check-email', { state: { email: formData.email } });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {

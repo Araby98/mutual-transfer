@@ -1,18 +1,19 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
-import { t } from '../locales/dictionary';
-import { Mail } from 'lucide-react';
 
 // After registration, redirect straight to /verify-email where they enter their code
 // This page is now just a transition — we instantly navigate
 export default function CheckEmail() {
-  const { lang } = useContext(AppContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Redirect to verify page immediately
+  // Redirect to verify page immediately, passing any email state received
   React.useEffect(() => {
-    navigate('/verify-email', { replace: true });
+    navigate('/verify-email', { 
+      replace: true, 
+      state: { email: location.state?.email || '' } 
+    });
   }, []);
 
   return (

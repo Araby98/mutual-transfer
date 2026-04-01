@@ -2,14 +2,18 @@
 // Configure your SMTP credentials below (or use environment variables)
 const nodemailer = require('nodemailer');
 
-// Create a transporter - configure with your real SMTP credentials
+// Create a transporter - robust settings for Gmail, Outlook, etc.
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true for 465, false for other ports
+  secure: false, // true for 465, false for 587 (STARTTLS)
   auth: {
-    user: process.env.SMTP_USER || 'your-email@gmail.com',
-    pass: process.env.SMTP_PASS || 'your-app-password'
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  },
+  tls: {
+    ciphers: 'SSLv3',
+    rejectUnauthorized: false // Sometimes needed for corporate SMTP
   }
 });
 

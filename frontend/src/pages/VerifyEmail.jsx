@@ -1,13 +1,16 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../context/AppContext';
+import { AuthContext } from '../App';
 import { t } from '../locales/dictionary';
 import { Mail, ShieldCheck, CheckCircle, RefreshCw } from 'lucide-react';
 
 export default function VerifyEmail() {
   const { lang } = useContext(AppContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
@@ -19,14 +22,37 @@ export default function VerifyEmail() {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendDone, setResendDone] = useState(false);
 
+  // Pre-fill email from navigation state (Register -> CheckEmail -> VerifyEmail)
+  useEffect(() => {
+    if (location.state?.email) {
+      setEmail(location.state.email);
+    }
+  }, [location.state]);
+
   const handleVerify = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/verify-email', { email, code });
+      const resp = await axios.post('http://localhost:5000/api/auth/verify-email', { email, code });
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 2500);
+      
+      // Auto login with the data returned from backend
+      if (resp.data.token && resp.data.user) {
+        login(resp.data.user, resp.data.token);
+        
+        // Short delay to show success icon, then redirect to dashboard
+        setTimeout(() => {
+          if (resp.data.user.isAdmin) {
+            navigate('/admin');
+          } else {
+            navigate('/dashboard');
+          }
+        }, 1500);
+      } else {
+        // Fallback for success without token (redirect to login)
+        setTimeout(() => navigate('/login'), 2000);
+      }
     } catch (err) {
       const msg = err.response?.data?.message;
       setError(msg === 'invalid_token'
@@ -63,7 +89,7 @@ export default function VerifyEmail() {
               <CheckCircle className="w-10 h-10 text-emerald-500" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-              {lang === 'ar' ? 'تم التحقق من البريد! يمكنك الآن تسجيل الدخول.' : 'Email verified! Redirecting to login...'}
+              {lang === 'ar' ? 'تم التحقق من البريد! جاري تحويلك...' : 'Email verified! Redirecting to dashboard...'}
             </h2>
           </div>
         ) : (
