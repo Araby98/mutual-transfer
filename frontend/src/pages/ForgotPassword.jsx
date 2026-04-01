@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../api';
 import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { t } from '../locales/dictionary';
@@ -17,7 +18,7 @@ export default function ForgotPassword() {
     setLoading(true);
     setError('');
     try {
-      await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+      await axios.post(`${API_BASE_URL}/api/auth/forgot-password`, { email });
       setSent(true);
     } catch (err) {
       setError(err.response?.data?.message || 'Something went wrong');

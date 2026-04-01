@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { t } from '../locales/dictionary';
+import { API_BASE_URL } from '../api';
 import { UserPlus } from 'lucide-react';
 import { regionsData, t_geo } from '../data/regions';
 
@@ -39,7 +40,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:5000/api/auth/register', formData);
+      await axios.post(`${API_BASE_URL}/api/auth/register`, formData);
       navigate('/check-email', { state: { email: formData.email } });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');

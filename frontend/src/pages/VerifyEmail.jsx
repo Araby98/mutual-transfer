@@ -21,7 +21,7 @@ export default function VerifyEmail() {
   // Resend state
   const [resendLoading, setResendLoading] = useState(false);
   const [resendDone, setResendDone] = useState(false);
-
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
   // Pre-fill email from navigation state (Register -> CheckEmail -> VerifyEmail)
   useEffect(() => {
     if (location.state?.email) {
@@ -34,7 +34,7 @@ export default function VerifyEmail() {
     setError('');
     setLoading(true);
     try {
-      const resp = await axios.post('http://localhost:5000/api/auth/verify-email', { email, code });
+      const resp = await axios.post(`${API_BASE_URL}/api/auth/verify-email`, { email, code });
       setSuccess(true);
       
       // Auto login with the data returned from backend
@@ -69,7 +69,7 @@ export default function VerifyEmail() {
     setResendLoading(true);
     setResendDone(false);
     try {
-      await axios.post('http://localhost:5000/api/auth/resend-verification', { email });
+      await axios.post(`${API_BASE_URL}/api/auth/resend-verification`, { email });
       setResendDone(true);
       setCode('');
     } catch {

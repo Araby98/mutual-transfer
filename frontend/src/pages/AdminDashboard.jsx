@@ -5,6 +5,7 @@ import { AppContext } from '../context/AppContext';
 import { t } from '../locales/dictionary';
 import { Users, FileText, CheckCircle, Clock, MapPin, Award, Check, Search, Filter, Settings, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
 import { regionsData, t_geo } from '../data/regions';
+import { API_BASE_URL } from '../api';
 
 export default function AdminDashboard() {
   const { user } = useContext(AuthContext);
@@ -30,17 +31,21 @@ export default function AdminDashboard() {
       const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
       
       const [statsRes, matchesRes, usersRes, settingsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/stats', { headers }),
-        axios.get('http://localhost:5000/api/admin/matches', { headers }),
-        axios.get('http://localhost:5000/api/admin/users', { headers }),
-        axios.get('http://localhost:5000/api/admin/settings', { headers })
+        axios.get(`${API_BASE_URL}/api/admin/stats`, { headers }),
+        axios.get(`${API_BASE_URL}/api/admin/matches`, { headers }),
+        axios.get(`${API_BASE_URL}/api/admin/users`, { headers }),
+        axios.get(`${API_BASE_URL}/api/admin/setting`, { headers })
       ]);
 
       setStats(statsRes.data);
-      setMatches(matchesRes.data);
-      setUsersList(usersRes.data);
+      if (Array.isArray(matchesRes.data)) {
+        setMatches(matchesRes.data);
+      }
+      if (Array.isArray(usersRes.data)) {
+        setUsersList(usersRes.data);
+      }
       
-      const autoSetting = settingsRes.data.find(s => s.key === 'autoApprove');
+      const autoSetting = Array.isArray(settingsRes.data) && settingsRes.data.find(s => s.key === 'autoApprove');
       if (autoSetting) {
         setAutoApprove(autoSetting.value === 'true');
       }
@@ -58,7 +63,7 @@ export default function AdminDashboard() {
   const approveMatch = async (id) => {
     if (!window.confirm('Are you sure you want to approve this match? It will be visible to both users immediately.')) return;
     try {
-      await axios.post(`http://localhost:5000/api/admin/matches/${id}/approve`, {}, {
+      await axios.post(`${API_BASE_URL}/api/admin/matches/${id}/approve`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       fetchData(); // Refresh everything
@@ -75,7 +80,7 @@ export default function AdminDashboard() {
     }
     
     try {
-      await axios.post('http://localhost:5000/api/admin/settings/autoApprove', { value: newValue }, {
+      await axios.post(`${API_BASE_URL}/api/admin/settings/autoApprove`, { value: newValue }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setAutoApprove(newValue);
@@ -89,7 +94,7 @@ export default function AdminDashboard() {
   const deleteUser = async (id, name) => {
     if (!window.confirm(`Are you sure you want to completely delete the user ${name} and all their history from the system?`)) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       fetchData(); // Refresh UI
@@ -214,7 +219,7 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                    {matches.map(m => (
+                    {Array.isArray(matches) && matches.map(m => (
                       <tr key={m.id} className={`transition-colors ${m.status === 'pending' ? 'bg-amber-50/20 dark:bg-amber-900/10 hover:bg-amber-50/40 dark:hover:bg-amber-900/20' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}>
                         <td className="px-6 py-4 align-middle">
                           {m.status === 'pending' ? (
@@ -357,8 +362,8 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                    {filteredUsers.map(u => {
-                      const isMatched = matches.some(m => m.user1Id === u.id || m.user2Id === u.id);
+                    {Array.isArray(filteredUsers) && filteredUsers.map(u => {
+                      const isMatched = Array.isArray(matches) && matches.some(m => m.user1Id === u.id || m.user2Id === u.id);
                       return (
                         <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                           <td className="px-6 py-4 align-top pt-5">

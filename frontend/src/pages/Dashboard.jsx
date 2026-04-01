@@ -5,7 +5,7 @@ import { t } from '../locales/dictionary';
 import axios from 'axios';
 import { Plus, Trash2, Users, MapPin, Phone, Mail, Award, AlertCircle, CheckCircle } from 'lucide-react';
 import { regionsData, t_geo } from '../data/regions';
-
+import { API_BASE_URL } from '../api';
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
   const { lang } = useContext(AppContext);
@@ -17,26 +17,36 @@ export default function Dashboard() {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
+  // const API_BASE_URL = import.meta.env.VITE_API_URL; 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/requests', {
+      const res = await axios.get(`${API_BASE_URL}/api/requests`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
-      setRequests(res.data);
+      if (Array.isArray(res.data)) {
+        setRequests(res.data);
+      } else {
+        setRequests([]);
+      }
     } catch (err) {
       console.error(err);
+      setRequests([]);
     }
   };
 
   const fetchMatches = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/requests/matches', {
+      const res = await axios.get(`${API_BASE_URL}/api/requests/matches`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
-      setMatches(res.data);
+      if (Array.isArray(res.data)) {
+        setMatches(res.data);
+      } else {
+        setMatches([]);
+      }
     } catch (err) {
       console.error(err);
+      setMatches([]);
     }
   };
 
@@ -55,7 +65,7 @@ export default function Dashboard() {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:5000/api/requests', 
+      await axios.post(`${API_BASE_URL}/api/requests`, 
         { toProvince: newProvince },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -73,7 +83,7 @@ export default function Dashboard() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this specific request?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/requests/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/requests/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       fetchRequests();
@@ -86,7 +96,7 @@ export default function Dashboard() {
   const markAsCompleted = async (matchId) => {
     if(!window.confirm('Have you successfully finalized your administrative transfer with this user? This will mark it as Complete in our database!')) return;
     try {
-      await axios.post(`http://localhost:5000/api/requests/matches/${matchId}/complete`, {}, {
+      await axios.post(`${API_BASE_URL}/api/requests/matches/${matchId}/complete`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       fetchMatches();
@@ -192,7 +202,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <ul className="space-y-2">
-                {requests.map(req => (
+                {Array.isArray(requests) && requests.map(req => (
                   <li key={req.id} className="flex justify-between items-center p-3 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-indigo-100 dark:hover:border-indigo-800 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20 transition-colors group">
                     <div className="flex items-center gap-3">
                       <div className="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 p-2 rounded-md transition-colors">
@@ -241,7 +251,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {matches.map(match => (
+                {Array.isArray(matches) && matches.map(match => (
                   <div key={match.id} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-600 transition-all duration-300 flex flex-col">
                     <div className="flex items-start justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
                       <div>

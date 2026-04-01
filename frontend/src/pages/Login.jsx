@@ -5,6 +5,7 @@ import { AuthContext } from '../App';
 import { AppContext } from '../context/AppContext';
 import { t } from '../locales/dictionary';
 import { LogIn, Mail, Lock } from 'lucide-react';
+import { API_BASE_URL } from '../api';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
       login(res.data.user, res.data.token);
     } catch (err) {
       const msg = err.response?.data?.message;

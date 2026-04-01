@@ -1,0 +1,15 @@
+{
+  "name": "mutual-transfer-project",
+  "version": "1.0.0",
+  "description": "Full-stack mutual transfer application",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm run dev",
+    "install-all": "npm install && cd backend && npm install && cd .. && cd frontend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { AuthContext } from '../App';
 import { AppContext } from '../context/AppContext';
 import { t } from '../locales/dictionary';
+import { API_BASE_URL } from '../api';
 import { Users, FileText, CheckCircle, ArrowRight, UserPlus, MapPin, SearchCheck, Building2 } from 'lucide-react';
 
 export default function Landing() {
@@ -12,8 +13,12 @@ export default function Landing() {
   const [stats, setStats] = useState({ users: 0, requests: 0, completed: 0 });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/public/stats')
-      .then(res => setStats(res.data))
+    axios.get(`${API_BASE_URL}/api/public/stats`)
+      .then(res => {
+        if (typeof res.data === 'object') {
+          setStats(res.data);
+        }
+      })
       .catch(console.error);
   }, []);
 

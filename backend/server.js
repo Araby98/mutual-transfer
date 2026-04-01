@@ -19,7 +19,7 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/public', publicRoutes);
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // ─── CLEANUP: delete unverified accounts older than 24h ──────────────────────
 async function cleanupUnverifiedUsers() {

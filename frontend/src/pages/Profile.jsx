@@ -5,6 +5,7 @@ import { AuthContext } from '../App';
 import { t } from '../locales/dictionary';
 import { regionsData, t_geo } from '../data/regions';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../api';
 import { User, CheckCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function Profile() {
@@ -62,7 +63,7 @@ export default function Profile() {
     setError('');
 
     try {
-      const res = await axios.put('http://localhost:5000/api/auth/profile', formData, {
+      const res = await axios.put(`${API_BASE_URL}/api/auth/profile`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       login(res.data, localStorage.getItem('token')); // Update context user object
