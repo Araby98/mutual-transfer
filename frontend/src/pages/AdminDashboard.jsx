@@ -34,7 +34,7 @@ export default function AdminDashboard() {
         axios.get(`${API_BASE_URL}/api/admin/stats`, { headers }),
         axios.get(`${API_BASE_URL}/api/admin/matches`, { headers }),
         axios.get(`${API_BASE_URL}/api/admin/users`, { headers }),
-        axios.get(`${API_BASE_URL}/api/admin/setting`, { headers })
+        axios.get(`${API_BASE_URL}/api/admin/settings`, { headers })
       ]);
 
       setStats(statsRes.data);

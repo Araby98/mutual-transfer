@@ -26,11 +26,10 @@ router.post('/register', async (req, res) => {
     });
 
     // Send verification email (non-blocking – registration still succeeds even if email fails)
-    try {
-      await sendVerificationEmail({ firstName, email }, verificationToken);
-    } catch (mailErr) {
+    // Send verification email asynchronously (fire-and-forget) to avoid blocking the user
+    sendVerificationEmail({ firstName, email }, verificationToken).catch(mailErr => {
       console.error('Verification email failed:', mailErr.message);
-    }
+    });
 
     res.status(201).json({ message: 'check_your_email' });
   } catch (error) {
@@ -165,11 +164,9 @@ router.post('/forgot-password', async (req, res) => {
     user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
     await user.save();
 
-    try {
-      await sendPasswordResetEmail(user, resetToken);
-    } catch (mailErr) {
+    sendPasswordResetEmail(user, resetToken).catch(mailErr => {
       console.error('Reset email failed:', mailErr.message);
-    }
+    });
 
     res.json({ message: 'reset_email_sent' });
   } catch (error) {
@@ -214,11 +211,9 @@ router.post('/resend-verification', async (req, res) => {
     user.verificationToken = verificationToken;
     await user.save();
 
-    try {
-      await sendVerificationEmail(user, verificationToken);
-    } catch (mailErr) {
+    sendVerificationEmail(user, verificationToken).catch(mailErr => {
       console.error('Resend verification email failed:', mailErr.message);
-    }
+    });
 
     res.json({ message: 'resent' });
   } catch (error) {
