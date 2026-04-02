@@ -88,7 +88,7 @@ sequelize.sync({ alter: true }).then(async () => {
     }
   }
 
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 
     // Run cleanup immediately on start, then every hour
