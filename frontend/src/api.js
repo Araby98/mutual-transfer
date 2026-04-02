@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+// Always point to Railway in all modules
+const API_BASE_URL = 'https://backend-mts-production.up.railway.app';
 
 const api = axios.create({
   baseURL: API_BASE_URL

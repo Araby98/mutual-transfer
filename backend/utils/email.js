@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const APP_URL = process.env.APP_URL || 'https://backend-mts-production.up.railway.app';
+const APP_URL = process.env.APP_URL || 'https://frontend-mts2.vercel.app';
 const FROM_EMAIL = process.env.FROM_EMAIL || '"Tabadol" <noreply@tabadol.ma>';
 
 /**
