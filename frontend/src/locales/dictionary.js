@@ -7,7 +7,7 @@ export const dict = {
     "logout": "Logout",
     "admin_dashboard": "Admin Dashboard",
     "dashboard": "Dashboard",
-    
+
     // Landing
     "hero_title_1": "The Smart Way to",
     "hero_title_2": "Mutual Transfer",
@@ -19,14 +19,14 @@ export const dict = {
     "successful_transfers": "Successful Transfers",
     "how_it_works": "How It Works",
     "step_1_title": "Create an Account",
-    "step_1_desc": "Sign up quickly using your professional grade and indicate the province you are currently stationed in.",
+    "step_1_desc": "Sign up quickly using your professional grade, current assigned province, and a valid phone number so your match can contact you.",
     "step_2_title": "Add Destinations",
     "step_2_desc": "Publish one or multiple provinces that you wish to transfer to. You can delete or edit them at any time!",
     "step_3_title": "Get Mutually Matched",
     "step_3_desc": "Our system runs in the background. Stop waiting—you will instantly see matching users who want to go where you are coming from.",
     "step_4_title": "Finalize Transfer",
     "step_4_desc": "Click to view your match's contact info. Carry out the legal transfer, then come back and mark it as highly completed!",
-    
+
     // Dashboard
     "currently_in": "Currently in",
     "new_transfer_req": "New Transfer Request",
@@ -48,7 +48,7 @@ export const dict = {
     "congratulations": "Congratulations on the mutual transfer!",
     "call": "Call",
     "email": "Email",
-    
+
     // Auth Forms
     "create_acct": "Create Account",
     "create_acct_desc": "Sign up to find your mutual transfer match instantly.",
@@ -60,7 +60,7 @@ export const dict = {
     "province": "Current Province",
     "password": "Password",
     "already_have_acct": "Already have an account? Login",
-    
+
     "welcome_back": "Welcome Back 👋",
     "login_desc": "Enter your credentials to access your account.",
     "dont_have_acct": "Don't have an account? Sign up",
@@ -68,7 +68,7 @@ export const dict = {
     "creating": "Creating...",
     "email_address": "Email Address",
     "check_creds": "Check your credentials",
-    
+
     // Admin Dashboard
     "sys_admin": "System Administrator",
     "sys_admin_desc": "Manage users, approve transfers, and configure platform settings.",
@@ -100,7 +100,7 @@ export const dict = {
     "none": "None",
     "pending": "Pending",
     "approved": "Approved",
-    
+
     // Profile
     "edit_profile": "Edit Profile",
     "save_changes": "Save Changes",
@@ -134,7 +134,32 @@ export const dict = {
     "resend_verification": "Resend verification email",
     "resend_email_placeholder": "Enter your email to get a new link",
     "resend_sent": "A new verification link has been sent! Check your inbox.",
-    "resending": "Sending..."
+    "resending": "Sending...",
+
+    // Modals & Alerts
+    "modal_confirm_title": "Please Confirm",
+    "modal_cancel": "Cancel",
+    "modal_confirm": "Confirm",
+    "confirm_delete_req": "Are you sure you want to delete this specific request?",
+    "err_mark_complete": "Failed to mark transfer as complete",
+    "confirm_mark_complete": "Have you successfully finalized your administrative transfer with this user? This will mark it as Complete in our database!",
+    "err_approve_match": "Failed to approve match",
+    "confirm_approve_match": "Are you sure you want to approve this match? It will be visible to both users immediately.",
+    "err_update_settings": "Failed to update system settings",
+    "confirm_auto_approve": "Are you sure you want to enable Auto-Approve? All new and pending matches will be automatically approved!",
+    "err_delete_user": "Failed to delete user",
+    "confirm_delete_user": "Are you sure you want to completely delete the user {name} and all their history from the system?",
+
+    // API Error Messages
+    "err_add_request": "Failed to add request",
+    "Target province is required": "Target province is required",
+    "Target province must be different from your current province": "Target province must be different from your current province",
+    "Request for this province already exists": "Request for this province already exists",
+    "Email already exists": "Email already exists",
+    "Missing fields": "Missing fields",
+    "Email not found": "Email not found",
+    "Invalid password": "Invalid password",
+    "Email already in use": "Email already in use"
   },
   ar: {
     // General
@@ -144,10 +169,10 @@ export const dict = {
     "logout": "تسجيل الخروج",
     "admin_dashboard": "لوحة الإدارة",
     "dashboard": "لوحة التحكم",
-    
+
     // Landing
-    "hero_title_1": "الطريقة الذكية لـ",
-    "hero_title_2": "التبادل المتبادل",
+    "hero_title_1": "الطريقة الذكية ",
+    "hero_title_2": "للانتقال بالتبادل",
     "hero_desc": "ابحث عن موظفين في جميع الأقاليم يرغبون في تبادل المناصب معك. يقوم نظامنا بمطابقتك بأمان بتوافق 100٪!",
     "get_started": "ابدأ الآن",
     "sign_in_account": "تسجيل الدخول إلى حسابك",
@@ -156,14 +181,14 @@ export const dict = {
     "successful_transfers": "الانتقالات الناجحة",
     "how_it_works": "كيف يعمل التطبيق",
     "step_1_title": "إنشاء حساب",
-    "step_1_desc": "سجل بسرعة باستخدام درجتك المهنية وحدد الإقليم الذي تتواجد فيه حاليًا.",
+    "step_1_desc": "سجل بسرعة باستخدام درجتك المهنية والإقليم الحالي، وتأكد من إدخال رقم هاتف صالح ليتمكن شريك التبادل من التواصل معك.",
     "step_2_title": "إضافة الوجهات",
     "step_2_desc": "انشر إقليمًا واحدًا أو عدة أقاليم ترغب في الانتقال إليها. يمكنك تعديلها في أي وقت!",
     "step_3_title": "الحصول على مطابقة",
     "step_3_desc": "يعمل نظامنا في الخلفية. سترى فورًا المستخدمين المطابقين الذين يرغبون في الانتقال إلى إقليمك.",
     "step_4_title": "إتمام الانتقال",
     "step_4_desc": "انقر لعرض معلومات الاتصال. قم بإجراء الانتقال القانوني، ثم عد واضغط على أن العملية تمت بنجاح!",
-    
+
     // Dashboard
     "currently_in": "متواجد حالياً في",
     "new_transfer_req": "طلب انتقال جديد",
@@ -185,7 +210,7 @@ export const dict = {
     "congratulations": "تهانينا على الانتقال المتبادل!",
     "call": "اتصال",
     "email": "بريد إلكتروني",
-    
+
     // Auth Forms
     "create_acct": "إنشاء حساب",
     "create_acct_desc": "سجل الآن للعثور على شريك التبادل الخاص بك على الفور.",
@@ -197,7 +222,7 @@ export const dict = {
     "province": "الإقليم الحالي",
     "password": "كلمة المرور",
     "already_have_acct": "لديك حساب بالفعل؟ تسجيل الدخول",
-    
+
     "welcome_back": "مرحباً بعودتك 👋",
     "login_desc": "أدخل بياناتك للوصول إلى حسابك.",
     "dont_have_acct": "ليس لديك حساب؟ إنشاء حساب",
@@ -205,7 +230,7 @@ export const dict = {
     "creating": "جاري الإنشاء...",
     "email_address": "البريد الإلكتروني",
     "check_creds": "تأكد من صحة البيانات",
-    
+
     // Admin Dashboard
     "sys_admin": "مسؤول النظام",
     "sys_admin_desc": "إدارة المستخدمين، المُوافقة على التحويلات، وتكوين إعدادات المنصة.",
@@ -237,7 +262,7 @@ export const dict = {
     "none": "لا شيء",
     "pending": "قيد الانتظار",
     "approved": "مقبول",
-    
+
     // Profile
     "edit_profile": "تعديل الملف الشخصي",
     "save_changes": "حفظ التغييرات",
@@ -271,7 +296,32 @@ export const dict = {
     "resend_verification": "إعادة إرسال رابط التحقق",
     "resend_email_placeholder": "أدخل بريدك للحصول على رابط جديد",
     "resend_sent": "تم إرسال رابط تحقق جديد! تحقق من صندوق الوارد.",
-    "resending": "جاري الإرسال..."
+    "resending": "جاري الإرسال...",
+
+    // Modals & Alerts
+    "modal_confirm_title": "الرجاء التأكيد",
+    "modal_cancel": "إلغاء",
+    "modal_confirm": "تأكيد",
+    "confirm_delete_req": "هل أنت متأكد أنك تريد حذف هذا الطلب المحدد؟",
+    "err_mark_complete": "فشل تحديد الانتقال كمكتمل",
+    "confirm_mark_complete": "هل أكملت بنجاح الانتقال الإداري مع هذا المستخدم؟ سيؤدي هذا إلى اعتباره مكتملًا في قاعدة بياناتنا!",
+    "err_approve_match": "فشل الموافقة على المطابقة",
+    "confirm_approve_match": "هل أنت متأكد أنك تريد الموافقة على هذه المطابقة؟ ستكون مرئية لكلا المستخدمين على الفور.",
+    "err_update_settings": "فشل تحديث إعدادات النظام",
+    "confirm_auto_approve": "هل أنت متأكد أنك تريد تمكين الموافقة التلقائية؟ سيتم الموافقة تلقائيًا على جميع المطابقات الجديدة والمعلقة!",
+    "err_delete_user": "فشل حذف المستخدم",
+    "confirm_delete_user": "هل أنت متأكد أنك تريد مسح المستخدم {name} وجميع بياناته بالكامل من النظام؟",
+
+    // API Error Messages
+    "err_add_request": "فشل إضافة الطلب",
+    "Target province is required": "تحديد الإقليم المستهدف مطلوب",
+    "Target province must be different from your current province": "يجب أن يكون الإقليم المستهدف مختلفًا عن إقليمك الحالي",
+    "Request for this province already exists": "بالفعل قمت بطلب الانتقال إلى هذا الإقليم",
+    "Email already exists": "البريد الإلكتروني موجود بالفعل",
+    "Missing fields": "حقول مفقودة للطراز",
+    "Email not found": "البريد الإلكتروني غير موجود",
+    "Invalid password": "كلمة المرور غير صحيحة",
+    "Email already in use": "البريد الإلكتروني قيد الاستخدام بالفعل"
   }
 };
 

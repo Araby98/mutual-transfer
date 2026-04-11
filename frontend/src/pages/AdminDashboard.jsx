@@ -3,8 +3,8 @@ import axios from 'axios';
 import { AuthContext } from '../App';
 import { AppContext } from '../context/AppContext';
 import { t } from '../locales/dictionary';
-import { Users, FileText, CheckCircle, Clock, MapPin, Award, Check, Search, Filter, Settings, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
-import { regionsData, t_geo } from '../data/regions';
+import { Users, FileText, CheckCircle, Clock, MapPin, Award, Check, Search, Filter, Settings, ToggleLeft, ToggleRight, Trash2, AlertCircle } from 'lucide-react';
+import { regionsData, t_geo, grades } from '../data/regions';
 import { API_BASE_URL } from '../api';
 
 export default function AdminDashboard() {
@@ -17,6 +17,9 @@ export default function AdminDashboard() {
   const [usersList, setUsersList] = useState([]);
   const [autoApprove, setAutoApprove] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  const [confirmCfg, setConfirmCfg] = useState({ isOpen: false, message: '', onConfirm: null });
+  const [alertMsg, setAlertMsg] = useState('');
 
   // Filters
   const [filterGrade, setFilterGrade] = useState('');
@@ -60,8 +63,7 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  const approveMatch = async (id) => {
-    if (!window.confirm('Are you sure you want to approve this match? It will be visible to both users immediately.')) return;
+  const approveMatchExec = async (id) => {
     try {
       await axios.post(`${API_BASE_URL}/api/admin/matches/${id}/approve`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -69,16 +71,22 @@ export default function AdminDashboard() {
       fetchData(); // Refresh everything
     } catch (err) {
       console.error(err);
-      alert('Failed to approve match');
+      setAlertMsg(t(lang, 'err_approve_match'));
     }
   };
 
-  const toggleAutoApprove = async () => {
-    const newValue = !autoApprove;
-    if (newValue) {
-      if (!window.confirm('Are you sure you want to enable Auto-Approve? All new and pending matches will be automatically approved!')) return;
-    }
-    
+  const approveMatch = (id) => {
+    setConfirmCfg({
+      isOpen: true,
+      message: t(lang, 'confirm_approve_match'),
+      onConfirm: () => {
+        approveMatchExec(id);
+        setConfirmCfg({ isOpen: false, message: '', onConfirm: null });
+      }
+    });
+  };
+
+  const toggleAutoApproveExec = async (newValue) => {
     try {
       await axios.post(`${API_BASE_URL}/api/admin/settings/autoApprove`, { value: newValue }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -87,12 +95,27 @@ export default function AdminDashboard() {
       if (newValue) fetchData(); // refresh if pending were approved
     } catch (err) {
       console.error(err);
-      alert('Failed to update system settings');
+      setAlertMsg(t(lang, 'err_update_settings'));
     }
   };
 
-  const deleteUser = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to completely delete the user ${name} and all their history from the system?`)) return;
+  const toggleAutoApprove = () => {
+    const newValue = !autoApprove;
+    if (newValue) {
+      setConfirmCfg({
+        isOpen: true,
+        message: t(lang, 'confirm_auto_approve'),
+        onConfirm: () => {
+          toggleAutoApproveExec(newValue);
+          setConfirmCfg({ isOpen: false, message: '', onConfirm: null });
+        }
+      });
+    } else {
+      toggleAutoApproveExec(newValue);
+    }
+  };
+
+  const deleteUserExec = async (id) => {
     try {
       await axios.delete(`${API_BASE_URL}/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -100,8 +123,19 @@ export default function AdminDashboard() {
       fetchData(); // Refresh UI
     } catch (err) {
       console.error(err);
-      alert('Failed to delete user');
+      setAlertMsg(t(lang, 'err_delete_user'));
     }
+  };
+
+  const deleteUser = (id, name) => {
+    setConfirmCfg({
+      isOpen: true,
+      message: t(lang, 'confirm_delete_user').replace('{name}', name),
+      onConfirm: () => {
+        deleteUserExec(id);
+        setConfirmCfg({ isOpen: false, message: '', onConfirm: null });
+      }
+    });
   };
 
   // Compute filtered users
@@ -125,8 +159,43 @@ export default function AdminDashboard() {
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full animate-fade-in transition-colors">
+    <div className="flex flex-col gap-6 w-full animate-fade-in transition-colors relative">
       
+      {/* Modals */}
+      {confirmCfg.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-slate-200 dark:border-slate-700">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-indigo-500" />
+              {t(lang, 'modal_confirm_title')}
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-6 font-medium">{confirmCfg.message}</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setConfirmCfg({ isOpen: false, message: '', onConfirm: null })} 
+                className="px-4 py-2 font-semibold bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+              >
+                {t(lang, 'modal_cancel')}
+              </button>
+              <button 
+                onClick={confirmCfg.onConfirm} 
+                className="px-4 py-2 font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-500/20"
+              >
+                {t(lang, 'modal_confirm')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {alertMsg && (
+        <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-[100] px-6 py-3.5 shadow-2xl shadow-red-500/20 bg-red-600 dark:bg-red-700 rounded-full border border-red-500 flex items-center gap-3 animate-fade-in transition-all">
+          <div className="bg-white/20 rounded-full p-1"><AlertCircle className="w-5 h-5 text-white" /></div>
+          <span className="text-white text-sm font-semibold tracking-wide pr-2">{alertMsg}</span>
+          <button onClick={() => setAlertMsg('')} className="text-white/70 hover:text-white font-bold ml-2">×</button>
+        </div>
+      )}
+
       {/* Header and Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
         <div>
@@ -288,8 +357,9 @@ export default function AdminDashboard() {
                 onChange={e => setFilterGrade(e.target.value)}
               >
                 <option value="">{t(lang, 'all_grades')}</option>
-                <option value="technicien">{t_geo(lang, 'technicien')}</option>
-                <option value="administrateur">{t_geo(lang, 'administrateur')}</option>
+                {grades.map(g => (
+                  <option key={g} value={g}>{t_geo(lang, g)}</option>
+                ))}
               </select>
 
               <select 

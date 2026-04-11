@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 import { AuthContext } from '../App';
 import { t } from '../locales/dictionary';
-import { regionsData, t_geo } from '../data/regions';
+import { regionsData, t_geo, grades } from '../data/regions';
 import { Link } from 'react-router-dom';
 import { API_BASE_URL } from '../api';
 import { User, CheckCircle, AlertCircle, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -145,8 +145,9 @@ export default function Profile() {
           <div>
             <label className="label-text">{t(lang, 'grade_target')}</label>
             <select name="grade" className="input-field" onChange={handleChange} value={formData.grade}>
-              <option value="technicien">{t_geo(lang, 'technicien')}</option>
-              <option value="administrateur">{t_geo(lang, 'administrateur')}</option>
+              {grades.map((g) => (
+                <option key={g} value={g}>{t_geo(lang, g)}</option>
+              ))}
             </select>
           </div>
           

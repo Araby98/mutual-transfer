@@ -17,6 +17,9 @@ export default function Dashboard() {
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  const [confirmCfg, setConfirmCfg] = useState({ isOpen: false, message: '', onConfirm: null });
+  const [alertMsg, setAlertMsg] = useState('');
   // const API_BASE_URL = import.meta.env.VITE_API_URL; 
   const fetchRequests = async () => {
     try {
@@ -74,14 +77,13 @@ export default function Dashboard() {
       fetchRequests();
       fetchMatches();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add request');
+      setError(t(lang, err.response?.data?.message || 'err_add_request'));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this specific request?')) return;
+  const handleDeleteReqExec = async (id) => {
     try {
       await axios.delete(`${API_BASE_URL}/api/requests/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -93,8 +95,18 @@ export default function Dashboard() {
     }
   };
 
-  const markAsCompleted = async (matchId) => {
-    if(!window.confirm('Have you successfully finalized your administrative transfer with this user? This will mark it as Complete in our database!')) return;
+  const handleDelete = (id) => {
+    setConfirmCfg({
+      isOpen: true,
+      message: t(lang, 'confirm_delete_req'),
+      onConfirm: () => {
+        handleDeleteReqExec(id);
+        setConfirmCfg({ isOpen: false, message: '', onConfirm: null });
+      }
+    });
+  };
+
+  const markAsCompletedExec = async (matchId) => {
     try {
       await axios.post(`${API_BASE_URL}/api/requests/matches/${matchId}/complete`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -102,12 +114,57 @@ export default function Dashboard() {
       fetchMatches();
     } catch(err) {
       console.error(err);
-      alert('Failed to mark transfer as complete');
+      setAlertMsg(t(lang, 'err_mark_complete'));
     }
   };
 
+  const markAsCompleted = (matchId) => {
+    setConfirmCfg({
+      isOpen: true,
+      message: t(lang, 'confirm_mark_complete'),
+      onConfirm: () => {
+        markAsCompletedExec(matchId);
+        setConfirmCfg({ isOpen: false, message: '', onConfirm: null });
+      }
+    });
+  };
+
   return (
-    <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 w-full transition-colors">
+    <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 w-full transition-colors relative">
+      {/* Modals */}
+      {confirmCfg.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-slate-200 dark:border-slate-700">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-indigo-500" />
+              {t(lang, 'modal_confirm_title')}
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-6 font-medium">{confirmCfg.message}</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setConfirmCfg({ isOpen: false, message: '', onConfirm: null })} 
+                className="px-4 py-2 font-semibold bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+              >
+                {t(lang, 'modal_cancel')}
+              </button>
+              <button 
+                onClick={confirmCfg.onConfirm} 
+                className="px-4 py-2 font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-500/20"
+              >
+                {t(lang, 'modal_confirm')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {alertMsg && (
+        <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-[100] px-6 py-3.5 shadow-2xl shadow-red-500/20 bg-red-600 dark:bg-red-700 rounded-full border border-red-500 flex items-center gap-3 animate-fade-in transition-all">
+          <div className="bg-white/20 rounded-full p-1"><AlertCircle className="w-5 h-5 text-white" /></div>
+          <span className="text-white text-sm font-semibold tracking-wide pr-2">{alertMsg}</span>
+          <button onClick={() => setAlertMsg('')} className="text-white/70 hover:text-white font-bold ml-2">×</button>
+        </div>
+      )}
       {/* Left Sidebar - Add/List Requests */}
       <div className="w-full lg:w-1/3 flex flex-col gap-6">
         
@@ -295,15 +352,24 @@ export default function Dashboard() {
                       <div className="grid grid-cols-2 gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-slate-700">
                         <a 
                           href={`tel:${match.phone}`} 
-                          className="flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-semibold transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+                          onClick={(e) => { if(window.innerWidth >= 768) e.preventDefault(); }}
+                          className="flex items-center justify-center gap-1.5 py-2 px-3 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-semibold transition-colors border border-slate-200 dark:border-slate-600 shadow-sm cursor-text md:cursor-auto"
+                          dir="ltr"
+                          title={t(lang, 'call')}
                         >
-                          <Phone className="w-4 h-4" /> {t(lang, 'call')}
+                          <Phone className="w-4 h-4 cursor-pointer md:cursor-text" /> 
+                          <span className="md:hidden cursor-pointer">{t(lang, 'call')}</span>
+                          <span className="hidden md:inline tracking-wider select-all cursor-text">{match.phone}</span>
                         </a>
                         <a 
                           href={`mailto:${match.email}`} 
-                          className="flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-400 rounded-lg text-sm font-semibold transition-colors border border-indigo-100 dark:border-indigo-800 shadow-sm"
+                          onClick={(e) => { if(window.innerWidth >= 768) e.preventDefault(); }}
+                          className="flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-400 rounded-lg text-sm font-semibold transition-colors border border-indigo-100 dark:border-indigo-800 shadow-sm cursor-text md:cursor-auto"
+                          title={t(lang, 'email')}
                         >
-                          <Mail className="w-4 h-4" /> {t(lang, 'email')}
+                          <Mail className="w-4 h-4 cursor-pointer md:cursor-text" /> 
+                          <span className="md:hidden cursor-pointer">{t(lang, 'email')}</span>
+                          <span className="hidden md:inline select-all cursor-text break-all">{match.email}</span>
                         </a>
                         <button 
                           onClick={() => markAsCompleted(match.matchId)} 

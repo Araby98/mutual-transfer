@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../api';
 import { AppContext } from '../context/AppContext';
 import { AuthContext } from '../App';
 import { t } from '../locales/dictionary';
@@ -21,11 +22,29 @@ export default function VerifyEmail() {
   // Resend state
   const [resendLoading, setResendLoading] = useState(false);
   const [resendDone, setResendDone] = useState(false);
-  const API_BASE_URL = import.meta.env.VITE_API_URL;
+
   // Pre-fill email from navigation state (Register -> CheckEmail -> VerifyEmail)
   useEffect(() => {
     if (location.state?.email) {
       setEmail(location.state.email);
+      
+      if (location.state.autoSend) {
+        const triggerResend = async () => {
+          setResendLoading(true);
+          try {
+            await axios.post(`${API_BASE_URL}/api/auth/resend-verification`, { email: location.state.email });
+            setResendDone(true);
+          } catch (e) {
+            console.error('Auto resend error', e);
+          } finally {
+            setResendLoading(false);
+          }
+        };
+        triggerResend();
+        
+        // Remove autoSend from history state so it doesn't re-trigger on refresh
+        window.history.replaceState({}, document.title);
+      }
     }
   }, [location.state]);
 
@@ -103,15 +122,24 @@ export default function VerifyEmail() {
             </div>
 
             {resendDone && (
-              <div className="mb-5 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-sm font-medium flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 flex-shrink-0" />
-                {t(lang, 'resend_sent')}
+              <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3.5 shadow-2xl shadow-emerald-500/20 bg-slate-900 dark:bg-slate-800 rounded-full border border-slate-800 dark:border-slate-700 flex items-center gap-3 animate-fade-in transition-all">
+                <div className="bg-emerald-500/20 rounded-full p-1 border border-emerald-500/30">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                </div>
+                <span className="text-white text-sm font-semibold tracking-wide pr-2">
+                  {t(lang, 'resend_sent')}
+                </span>
               </div>
             )}
 
             {error && (
-              <div className="mb-5 p-3 rounded-lg bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium">
-                {error}
+              <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3.5 shadow-2xl shadow-red-500/20 bg-red-600 dark:bg-red-700 rounded-full border border-red-500 flex items-center gap-3 animate-fade-in transition-all">
+                <div className="bg-white/20 rounded-full p-1">
+                  <ShieldCheck className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-white text-sm font-semibold tracking-wide pr-2">
+                  {error}
+                </span>
               </div>
             )}
 

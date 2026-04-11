@@ -13,6 +13,12 @@ export const regionsData = {
   "Dakhla-Oued Ed-Dahab": ["Oued Ed-Dahab", "Aousserd"]
 };
 
+export const grades = [
+  'technicien',
+  'administrateur',
+  'controleur'
+];
+
 // Internal translation dictionary
 const transDict = {
   "Tanger-Tétouan-Al Hoceïma": "طنجة-تطوان-الحسيمة",
@@ -116,8 +122,10 @@ const transDict = {
   
   "technicien": "تقني",
   "administrateur": "متصرف",
+  "controleur": "مراقب",
   "TECHNICIEN": "تقني",
-  "ADMINISTRATEUR": "متصرف"
+  "ADMINISTRATEUR": "متصرف",
+  "CONTROLEUR": "مراقب"
 };
 
 // Helper function to safely translate any province, region or grade string

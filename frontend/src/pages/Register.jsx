@@ -5,7 +5,7 @@ import { AppContext } from '../context/AppContext';
 import { t } from '../locales/dictionary';
 import { API_BASE_URL } from '../api';
 import { UserPlus } from 'lucide-react';
-import { regionsData, t_geo } from '../data/regions';
+import { regionsData, t_geo, grades } from '../data/regions';
 
 export default function Register() {
   const [selectedRegion, setSelectedRegion] = useState('');
@@ -86,8 +86,9 @@ export default function Register() {
           <div>
             <label className="label-text">{t(lang, 'grade_target')}</label>
             <select name="grade" className="input-field" onChange={handleChange} value={formData.grade}>
-              <option value="technicien">{t_geo(lang, 'technicien')}</option>
-              <option value="administrateur">{t_geo(lang, 'administrateur')}</option>
+              {grades.map((g) => (
+                <option key={g} value={g}>{t_geo(lang, g)}</option>
+              ))}
             </select>
           </div>
 
